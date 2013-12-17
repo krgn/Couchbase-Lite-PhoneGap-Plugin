@@ -6,11 +6,11 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
 
-import com.couchbase.cblite.CBLServer;
-import com.couchbase.cblite.listener.CBLListener;
-import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
-import com.couchbase.cblite.CBLView;
-import com.couchbase.cblite.javascript.CBLJavaScriptViewCompiler;
+import com.couchbase.lite.listener.LiteServer;
+import com.couchbase.lite.listener.CBLListener;
+import com.couchbase.lite.router.URLStreamHandlerFactory;
+import com.couchbase.lite.View;
+import com.couchbase.lite.ViewCompiler;
 
 import java.io.IOException;
 
@@ -39,15 +39,15 @@ public class CBLite extends CordovaPlugin {
 	private void initCBLite() {
 		try {
 
-			CBLURLStreamHandlerFactory.registerSelfIgnoreError();
+			URLStreamHandlerFactory.registerSelfIgnoreError();
 
-			CBLView.setCompiler(new CBLJavaScriptViewCompiler());
+			View.setCompiler(new ViewCompiler());
 
 			String filesDir = this.cordova.getActivity().getFilesDir()
 					.getAbsolutePath();
-			CBLServer server = startCBLite(filesDir);
+			LiteServer server = startCBLite(filesDir);
 
-			listenPort = startCBLListener(DEFAULT_LISTEN_PORT, server);
+			listenPort = startListener(DEFAULT_LISTEN_PORT, server);
 
 			System.out.println("initCBLite() completed successfully");
 
@@ -85,19 +85,19 @@ public class CBLite extends CordovaPlugin {
 		return false;
 	}
 
-	protected CBLServer startCBLite(String dirAbsolutePath) {
-		CBLServer server;
+	protected LiteServer startCBLite(String dirAbsolutePath) {
+        LiteServer server;
 		try {
-			server = new CBLServer(dirAbsolutePath);
+			server = new LiteServer(dirAbsolutePath);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return server;
 	}
 
-	private int startCBLListener(int listenPort, CBLServer server) {
+	private int startListener(int listenPort, CBLServer server) {
 
-		CBLListener listener = new CBLListener(server, listenPort);
+		LiteListener listener = new LiteListener(server, listenPort);
 		int boundPort = listener.getListenPort();
 		Thread thread = new Thread(listener);
 		thread.start();
