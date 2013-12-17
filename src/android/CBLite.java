@@ -6,12 +6,14 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
 
-import com.couchbase.lite.listener.LiteServer;
-import com.couchbase.lite.listener.CBLListener;
+import com.couchbase.lite.Manager;
+import com.couchbase.lite.ManagerOptions;
+import com.couchbase.lite.listener.LiteListener;
 import com.couchbase.lite.router.URLStreamHandlerFactory;
 import com.couchbase.lite.View;
-import com.couchbase.lite.ViewCompiler;
+import com.couchbase.lite.javascript.JavaScriptViewCompiler;
 
+import java.io.File;
 import java.io.IOException;
 
 public class CBLite extends CordovaPlugin {
@@ -33,21 +35,18 @@ public class CBLite extends CordovaPlugin {
 
 		super.initialize(cordova, webView);
 		initCBLite();
-
 	}
 
 	private void initCBLite() {
 		try {
-
 			URLStreamHandlerFactory.registerSelfIgnoreError();
 
-			View.setCompiler(new ViewCompiler());
+			View.setCompiler(new JavaScriptViewCompiler());
 
-			String filesDir = this.cordova.getActivity().getFilesDir()
-					.getAbsolutePath();
-			LiteServer server = startCBLite(filesDir);
+			File filesDir = this.cordova.getActivity().getFilesDir();
+			Manager manager = startLite(filesDir);
 
-			listenPort = startListener(DEFAULT_LISTEN_PORT, server);
+			listenPort = startListener(DEFAULT_LISTEN_PORT, manager);
 
 			System.out.println("initCBLite() completed successfully");
 
@@ -85,19 +84,19 @@ public class CBLite extends CordovaPlugin {
 		return false;
 	}
 
-	protected LiteServer startCBLite(String dirAbsolutePath) {
-        LiteServer server;
+	protected Manager startLite(File dirAbsolutePath) {
+        Manager manager;
 		try {
-			server = new LiteServer(dirAbsolutePath);
+			manager = new Manager(dirAbsolutePath, Manager.DEFAULT_OPTIONS);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return server;
+		return manager;
 	}
 
-	private int startListener(int listenPort, CBLServer server) {
+	private int startListener(int listenPort, Manager manager) {
 
-		LiteListener listener = new LiteListener(server, listenPort);
+		LiteListener listener = new LiteListener(manager, listenPort);
 		int boundPort = listener.getListenPort();
 		Thread thread = new Thread(listener);
 		thread.start();
