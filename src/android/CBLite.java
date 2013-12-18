@@ -145,8 +145,11 @@ public class CBLite extends CordovaPlugin {
                 JSONObject jsonEvent = new JSONObject();
 
                 try {
-                    jsonEvent.put("remote", replicator.getRemoteUrl().toString());
+                    jsonEvent.put("name", replicator.isRunning() ? "CBL_ReplicatorProgressChanged" : "CBL_ReplicatorStopped");
+                    jsonEvent.put("changesProcessed", replicator.getCompletedChangesCount());
+                    jsonEvent.put("changesTotal", replicator.getChangesCount());
                     jsonEvent.put("running", replicator.isRunning());
+                    jsonEvent.put("active", replicator.isActive());
                 }
                 catch(JSONException e) {
                     e.printStackTrace();
