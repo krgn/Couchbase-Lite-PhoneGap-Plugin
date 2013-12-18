@@ -64,9 +64,9 @@
       </feature>
     </config-file>
     <source-file src="src/android/CBLite.java" target-dir="src/com/couchbase/cblite/plugins"/>
-    <source-file src="lib/android/CBLite-1.0.0-beta.jar" target-dir="libs"/>
-    <source-file src="lib/android/CBLiteJavascript-1.0.0-beta.jar" target-dir="libs"/>
-    <source-file src="lib/android/CBLiteListener-1.0.0-beta.jar" target-dir="libs"/>
+    <source-file src="lib/android/CBLite-git.jar" target-dir="libs"/>
+    <source-file src="lib/android/CBLiteJavascript-git.jar" target-dir="libs"/>
+    <source-file src="lib/android/CBLiteListener-git.jar" target-dir="libs"/>
     <source-file src="lib/android/commons-io-2.0.1.jar" target-dir="libs"/>
     <source-file src="lib/android/jackson-core-asl-1.9.2.jar" target-dir="libs"/>
     <source-file src="lib/android/jackson-mapper-asl-1.9.2.jar" target-dir="libs"/>
